@@ -1,0 +1,125 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type PaymentMethod {
+  id: ID!
+  type: PaymentType!
+  label: String!
+  isDefault: Boolean!
+  userId: String!
+  user: User
+}
+
+enum PaymentType {
+  CARD
+  UPI
+  WALLET
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  role: Role!
+  country: Country
+  orders: [Order!]!
+  paymentMethods: [PaymentMethod!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  MEMBER
+}
+
+enum Country {
+  INDIA
+  AMERICA
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type MenuItem {
+  id: ID!
+  name: String!
+  description: String!
+  price: Float!
+  imageUrl: String!
+  isAvailable: Boolean!
+  restaurantId: String!
+  restaurant: Restaurant
+}
+
+type Restaurant {
+  id: ID!
+  name: String!
+  description: String!
+  imageUrl: String!
+  country: Country!
+  isActive: Boolean!
+  menuItems: [MenuItem!]!
+  orders: [Order!]!
+}
+
+type OrderItem {
+  id: ID!
+  quantity: Float!
+  unitPrice: Float!
+  orderId: String!
+  order: Order
+  menuItemId: String!
+  menuItem: MenuItem
+}
+
+type Order {
+  id: ID!
+  status: OrderStatus!
+  userId: String!
+  user: User
+  restaurantId: String!
+  restaurant: Restaurant
+  totalAmount: Float!
+  orderItems: [OrderItem!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum OrderStatus {
+  PENDING
+  PLACED
+  CANCELLED
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+type Query {
+  restaurants: [Restaurant!]!
+  restaurant(id: String!): Restaurant!
+  menuItems(restaurantId: String!): [MenuItem!]!
+  menuItem(id: String!): MenuItem!
+  myOrders: [Order!]!
+  order(id: String!): Order!
+  myPaymentMethods: [PaymentMethod!]!
+}
+
+type Mutation {
+  register(name: String!, email: String!, password: String!, role: Role!, country: Country): AuthPayload!
+  login(email: String!, password: String!): AuthPayload!
+  createOrder(restaurantId: String!): Order!
+  addItemToOrder(orderId: String!, menuItemId: String!, qty: Int!): Order!
+  removeItemFromOrder(orderId: String!, orderItemId: String!): Order!
+  placeOrder(orderId: String!, paymentMethodId: String!): Order!
+  cancelOrder(orderId: String!): Order!
+  addPaymentMethod(type: PaymentType!, label: String!): PaymentMethod!
+  updatePaymentMethod(id: String!, label: String!, isDefault: Boolean!): PaymentMethod!
+  deletePaymentMethod(id: String!): Boolean!
+}
