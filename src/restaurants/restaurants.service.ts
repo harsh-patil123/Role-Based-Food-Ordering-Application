@@ -1,4 +1,8 @@
-import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Role, Country, User } from '@prisma/client';
 
@@ -63,7 +67,10 @@ export class RestaurantsService {
       throw new NotFoundException('MenuItem not found');
     }
 
-    if (user.role !== Role.ADMIN && menuItem.restaurant.country !== user.country) {
+    if (
+      user.role !== Role.ADMIN &&
+      menuItem.restaurant.country !== user.country
+    ) {
       throw new ForbiddenException('Access denied: country restriction');
     }
 

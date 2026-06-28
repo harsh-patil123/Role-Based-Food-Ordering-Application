@@ -10,12 +10,53 @@ describe('Re-BAC Country Restrictions', () => {
   let ordersService: OrdersService;
   let prisma: PrismaService;
 
-  const mockManagerIndia = { id: 'mgr-in', role: Role.MANAGER, country: Country.INDIA, name: 'Marvel', email: 'cm@shield.gov', passwordHash: 'hash', createdAt: new Date(), updatedAt: new Date() };
-  const mockMemberAmerica = { id: 'mem-us', role: Role.MEMBER, country: Country.AMERICA, name: 'Travis', email: 't@shield.gov', passwordHash: 'hash', createdAt: new Date(), updatedAt: new Date() };
-  const mockAdmin = { id: 'admin', role: Role.ADMIN, country: null, name: 'Nick Fury', email: 'nf@shield.gov', passwordHash: 'hash', createdAt: new Date(), updatedAt: new Date() };
+  const mockManagerIndia = {
+    id: 'mgr-in',
+    role: Role.MANAGER,
+    country: Country.INDIA,
+    name: 'Marvel',
+    email: 'cm@shield.gov',
+    passwordHash: 'hash',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  const mockMemberAmerica = {
+    id: 'mem-us',
+    role: Role.MEMBER,
+    country: Country.AMERICA,
+    name: 'Travis',
+    email: 't@shield.gov',
+    passwordHash: 'hash',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  const mockAdmin = {
+    id: 'admin',
+    role: Role.ADMIN,
+    country: null,
+    name: 'Nick Fury',
+    email: 'nf@shield.gov',
+    passwordHash: 'hash',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
-  const mockRestaurantIndia = { id: 'rest-in', name: 'Spice Garden', country: Country.INDIA, description: 'Desc', imageUrl: 'Img', isActive: true };
-  const mockRestaurantAmerica = { id: 'rest-us', name: 'Burger Palace', country: Country.AMERICA, description: 'Desc', imageUrl: 'Img', isActive: true };
+  const mockRestaurantIndia = {
+    id: 'rest-in',
+    name: 'Spice Garden',
+    country: Country.INDIA,
+    description: 'Desc',
+    imageUrl: 'Img',
+    isActive: true,
+  };
+  const mockRestaurantAmerica = {
+    id: 'rest-us',
+    name: 'Burger Palace',
+    country: Country.AMERICA,
+    description: 'Desc',
+    imageUrl: 'Img',
+    isActive: true,
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -51,7 +92,9 @@ describe('Re-BAC Country Restrictions', () => {
   });
 
   it('Indian MANAGER cannot view American restaurant', async () => {
-    jest.spyOn(prisma.restaurant, 'findUnique').mockResolvedValue(mockRestaurantAmerica as any);
+    jest
+      .spyOn(prisma.restaurant, 'findUnique')
+      .mockResolvedValue(mockRestaurantAmerica);
 
     await expect(
       restaurantsService.findOne('rest-us', mockManagerIndia),
@@ -59,7 +102,9 @@ describe('Re-BAC Country Restrictions', () => {
   });
 
   it('American MEMBER cannot place order at Indian restaurant', async () => {
-    jest.spyOn(prisma.restaurant, 'findUnique').mockResolvedValue(mockRestaurantIndia as any);
+    jest
+      .spyOn(prisma.restaurant, 'findUnique')
+      .mockResolvedValue(mockRestaurantIndia);
 
     await expect(
       ordersService.create('rest-in', mockMemberAmerica),
@@ -67,13 +112,20 @@ describe('Re-BAC Country Restrictions', () => {
   });
 
   it('ADMIN can view and act on both countries freely', async () => {
-    jest.spyOn(prisma.restaurant, 'findUnique').mockResolvedValue(mockRestaurantIndia as any);
+    jest
+      .spyOn(prisma.restaurant, 'findUnique')
+      .mockResolvedValue(mockRestaurantIndia);
     const restResult = await restaurantsService.findOne('rest-in', mockAdmin);
     expect(restResult).toEqual(mockRestaurantIndia);
 
-    jest.spyOn(prisma.restaurant, 'findUnique').mockResolvedValue(mockRestaurantAmerica as any);
-    jest.spyOn(prisma.order, 'create').mockResolvedValue({ id: 'new-order-us', restaurant: mockRestaurantAmerica } as any);
-    
+    jest
+      .spyOn(prisma.restaurant, 'findUnique')
+      .mockResolvedValue(mockRestaurantAmerica);
+    jest.spyOn(prisma.order, 'create').mockResolvedValue({
+      id: 'new-order-us',
+      restaurant: mockRestaurantAmerica,
+    } as any);
+
     const orderResult = await ordersService.create('rest-us', mockAdmin);
     expect(orderResult.restaurant).toEqual(mockRestaurantAmerica);
   });

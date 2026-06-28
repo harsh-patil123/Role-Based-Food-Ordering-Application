@@ -39,10 +39,7 @@ export class PaymentsResolver {
   }
 
   @Mutation(() => Boolean)
-  async deletePaymentMethod(
-    @Args('id') id: string,
-    @CurrentUser() user: any,
-  ) {
+  async deletePaymentMethod(@Args('id') id: string, @CurrentUser() user: any) {
     return this.paymentsService.delete(id, user);
   }
 }

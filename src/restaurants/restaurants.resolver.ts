@@ -16,10 +16,7 @@ export class RestaurantsResolver {
   }
 
   @Query(() => Restaurant)
-  async restaurant(
-    @Args('id') id: string,
-    @CurrentUser() user: any,
-  ) {
+  async restaurant(@Args('id') id: string, @CurrentUser() user: any) {
     return this.restaurantsService.findOne(id, user);
   }
 
@@ -32,10 +29,7 @@ export class RestaurantsResolver {
   }
 
   @Query(() => MenuItem)
-  async menuItem(
-    @Args('id') id: string,
-    @CurrentUser() user: any,
-  ) {
+  async menuItem(@Args('id') id: string, @CurrentUser() user: any) {
     return this.restaurantsService.findMenuItem(id, user);
   }
 }

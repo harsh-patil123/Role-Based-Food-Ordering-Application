@@ -8,8 +8,22 @@ describe('RestaurantsService', () => {
   let prisma: PrismaService;
 
   const mockRestaurants = [
-    { id: '1', name: 'Spice Garden', country: Country.INDIA, description: 'Desc', imageUrl: 'Img', isActive: true },
-    { id: '2', name: 'Burger Palace', country: Country.AMERICA, description: 'Desc', imageUrl: 'Img', isActive: true },
+    {
+      id: '1',
+      name: 'Spice Garden',
+      country: Country.INDIA,
+      description: 'Desc',
+      imageUrl: 'Img',
+      isActive: true,
+    },
+    {
+      id: '2',
+      name: 'Burger Palace',
+      country: Country.AMERICA,
+      description: 'Desc',
+      imageUrl: 'Img',
+      isActive: true,
+    },
   ];
 
   beforeEach(async () => {
@@ -32,17 +46,41 @@ describe('RestaurantsService', () => {
   });
 
   it('ADMIN sees restaurants from both countries', async () => {
-    const adminUser = { id: 'admin-id', role: Role.ADMIN, country: null, name: 'Nick Fury', email: 'nf@shield.gov', passwordHash: 'hash', createdAt: new Date(), updatedAt: new Date() };
-    jest.spyOn(prisma.restaurant, 'findMany').mockResolvedValue(mockRestaurants);
+    const adminUser = {
+      id: 'admin-id',
+      role: Role.ADMIN,
+      country: null,
+      name: 'Nick Fury',
+      email: 'nf@shield.gov',
+      passwordHash: 'hash',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    jest
+      .spyOn(prisma.restaurant, 'findMany')
+      .mockResolvedValue(mockRestaurants);
 
     const result = await service.findAll(adminUser);
     expect(result).toHaveLength(2);
-    expect(prisma.restaurant.findMany).toHaveBeenCalledWith({ include: { menuItems: true } });
+    expect(prisma.restaurant.findMany).toHaveBeenCalledWith({
+      include: { menuItems: true },
+    });
   });
 
   it('MANAGER (India) sees only Indian restaurants', async () => {
-    const managerIn = { id: 'mgr-id', role: Role.MANAGER, country: Country.INDIA, name: 'Marvel', email: 'cm@shield.gov', passwordHash: 'hash', createdAt: new Date(), updatedAt: new Date() };
-    jest.spyOn(prisma.restaurant, 'findMany').mockResolvedValue([mockRestaurants[0]]);
+    const managerIn = {
+      id: 'mgr-id',
+      role: Role.MANAGER,
+      country: Country.INDIA,
+      name: 'Marvel',
+      email: 'cm@shield.gov',
+      passwordHash: 'hash',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    jest
+      .spyOn(prisma.restaurant, 'findMany')
+      .mockResolvedValue([mockRestaurants[0]]);
 
     const result = await service.findAll(managerIn);
     expect(result).toHaveLength(1);
@@ -54,8 +92,19 @@ describe('RestaurantsService', () => {
   });
 
   it('MEMBER (America) sees only American restaurants', async () => {
-    const memberUs = { id: 'mem-id', role: Role.MEMBER, country: Country.AMERICA, name: 'Travis', email: 't@shield.gov', passwordHash: 'hash', createdAt: new Date(), updatedAt: new Date() };
-    jest.spyOn(prisma.restaurant, 'findMany').mockResolvedValue([mockRestaurants[1]]);
+    const memberUs = {
+      id: 'mem-id',
+      role: Role.MEMBER,
+      country: Country.AMERICA,
+      name: 'Travis',
+      email: 't@shield.gov',
+      passwordHash: 'hash',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    jest
+      .spyOn(prisma.restaurant, 'findMany')
+      .mockResolvedValue([mockRestaurants[1]]);
 
     const result = await service.findAll(memberUs);
     expect(result).toHaveLength(1);

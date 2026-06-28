@@ -33,3 +33,5 @@ Thumbs.db
 # Databases
 *.db
 *.db-journal
+
+.vercel

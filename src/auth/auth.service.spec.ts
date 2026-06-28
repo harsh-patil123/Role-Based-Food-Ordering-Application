@@ -62,10 +62,18 @@ describe('AuthService', () => {
   });
 
   it('should throw on duplicate email', async () => {
-    jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(mockUser as any);
+    jest
+      .spyOn(usersService, 'findOneByEmail')
+      .mockResolvedValue(mockUser as any);
 
     await expect(
-      service.register('Test User', 'test@example.com', 'password123', Role.MEMBER, Country.INDIA),
+      service.register(
+        'Test User',
+        'test@example.com',
+        'password123',
+        Role.MEMBER,
+        Country.INDIA,
+      ),
     ).rejects.toThrow(ConflictException);
   });
 
@@ -73,7 +81,9 @@ describe('AuthService', () => {
     const hash = await bcrypt.hash('password123', 10);
     const userWithHash = { ...mockUser, passwordHash: hash };
 
-    jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(userWithHash as any);
+    jest
+      .spyOn(usersService, 'findOneByEmail')
+      .mockResolvedValue(userWithHash as any);
 
     const result = await service.login('test@example.com', 'password123');
 
@@ -85,7 +95,9 @@ describe('AuthService', () => {
     const hash = await bcrypt.hash('password123', 10);
     const userWithHash = { ...mockUser, passwordHash: hash };
 
-    jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(userWithHash as any);
+    jest
+      .spyOn(usersService, 'findOneByEmail')
+      .mockResolvedValue(userWithHash as any);
 
     await expect(
       service.login('test@example.com', 'wrong_password'),

@@ -19,10 +19,7 @@ export class OrdersResolver {
   }
 
   @Query(() => Order)
-  async order(
-    @Args('id') id: string,
-    @CurrentUser() user: any,
-  ) {
+  async order(@Args('id') id: string, @CurrentUser() user: any) {
     return this.ordersService.findOne(id, user);
   }
 

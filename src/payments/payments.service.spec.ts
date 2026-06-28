@@ -8,11 +8,44 @@ describe('PaymentsService', () => {
   let service: PaymentsService;
   let prisma: PrismaService;
 
-  const mockUserAdmin = { id: 'admin-id', role: Role.ADMIN, country: null, name: 'Nick Fury', email: 'nf@shield.gov', passwordHash: 'hash', createdAt: new Date(), updatedAt: new Date() };
-  const mockUserManager = { id: 'manager-id', role: Role.MANAGER, country: Country.INDIA, name: 'Marvel', email: 'cm@shield.gov', passwordHash: 'hash', createdAt: new Date(), updatedAt: new Date() };
-  const mockUserMember = { id: 'member-id', role: Role.MEMBER, country: Country.INDIA, name: 'Thanos', email: 't@shield.gov', passwordHash: 'hash', createdAt: new Date(), updatedAt: new Date() };
+  const mockUserAdmin = {
+    id: 'admin-id',
+    role: Role.ADMIN,
+    country: null,
+    name: 'Nick Fury',
+    email: 'nf@shield.gov',
+    passwordHash: 'hash',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  const mockUserManager = {
+    id: 'manager-id',
+    role: Role.MANAGER,
+    country: Country.INDIA,
+    name: 'Marvel',
+    email: 'cm@shield.gov',
+    passwordHash: 'hash',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  const mockUserMember = {
+    id: 'member-id',
+    role: Role.MEMBER,
+    country: Country.INDIA,
+    name: 'Thanos',
+    email: 't@shield.gov',
+    passwordHash: 'hash',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
-  const mockPaymentMethod = { id: 'pm-id', type: PaymentType.CARD, label: 'Visa ending 4242', isDefault: true, userId: 'admin-id' };
+  const mockPaymentMethod = {
+    id: 'pm-id',
+    type: PaymentType.CARD,
+    label: 'Visa ending 4242',
+    isDefault: true,
+    userId: 'admin-id',
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -39,9 +72,15 @@ describe('PaymentsService', () => {
 
   it('ADMIN can add a payment method', async () => {
     jest.spyOn(prisma.paymentMethod, 'count').mockResolvedValue(0);
-    jest.spyOn(prisma.paymentMethod, 'create').mockResolvedValue(mockPaymentMethod as any);
+    jest
+      .spyOn(prisma.paymentMethod, 'create')
+      .mockResolvedValue(mockPaymentMethod);
 
-    const result = await service.add(PaymentType.CARD, 'Visa ending 4242', mockUserAdmin);
+    const result = await service.add(
+      PaymentType.CARD,
+      'Visa ending 4242',
+      mockUserAdmin,
+    );
     expect(result).toEqual(mockPaymentMethod);
     expect(prisma.paymentMethod.create).toHaveBeenCalledWith({
       data: {

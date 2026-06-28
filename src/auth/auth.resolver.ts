@@ -13,7 +13,8 @@ export class AuthResolver {
     @Args('email') email: string,
     @Args('password') passwordRaw: string,
     @Args('role', { type: () => Role }) role: Role,
-    @Args('country', { type: () => Country, nullable: true }) country?: Country | null,
+    @Args('country', { type: () => Country, nullable: true })
+    country?: Country | null,
   ) {
     return this.authService.register(name, email, passwordRaw, role, country);
   }

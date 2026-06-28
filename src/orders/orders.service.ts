@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Role, Country, OrderStatus, User } from '@prisma/client';
 
@@ -82,7 +87,12 @@ export class OrdersService {
     });
   }
 
-  async addItem(orderId: string, menuItemId: string, quantity: number, user: User) {
+  async addItem(
+    orderId: string,
+    menuItemId: string,
+    quantity: number,
+    user: User,
+  ) {
     const order = await this.prisma.order.findUnique({
       where: { id: orderId },
       include: { restaurant: true },
@@ -113,7 +123,9 @@ export class OrdersService {
     }
 
     if (menuItem.restaurantId !== order.restaurantId) {
-      throw new BadRequestException('MenuItem does not belong to the restaurant of this order');
+      throw new BadRequestException(
+        'MenuItem does not belong to the restaurant of this order',
+      );
     }
 
     const itemPrice = menuItem.price;
@@ -157,7 +169,9 @@ export class OrdersService {
     }
 
     if (order.status !== OrderStatus.PENDING) {
-      throw new BadRequestException('Cannot remove items from a finalized order');
+      throw new BadRequestException(
+        'Cannot remove items from a finalized order',
+      );
     }
 
     const orderItem = await this.prisma.orderItem.findUnique({
@@ -168,7 +182,10 @@ export class OrdersService {
       throw new NotFoundException('OrderItem not found in this order');
     }
 
-    const updatedTotal = Math.max(0.0, order.totalAmount - orderItem.unitPrice * orderItem.quantity);
+    const updatedTotal = Math.max(
+      0.0,
+      order.totalAmount - orderItem.unitPrice * orderItem.quantity,
+    );
     await this.prisma.orderItem.delete({
       where: { id: orderItemId },
     });

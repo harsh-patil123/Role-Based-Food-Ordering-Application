@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
@@ -11,7 +15,13 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(name: string, email: string, passwordRaw: string, role: Role, country?: Country | null) {
+  async register(
+    name: string,
+    email: string,
+    passwordRaw: string,
+    role: Role,
+    country?: Country | null,
+  ) {
     const existing = await this.usersService.findOneByEmail(email);
     if (existing) {
       throw new ConflictException('Email already exists');
@@ -24,7 +34,11 @@ export class AuthService {
       role,
       country: country || null,
     });
-    const token = this.jwtService.sign({ sub: user.id, role: user.role, country: user.country });
+    const token = this.jwtService.sign({
+      sub: user.id,
+      role: user.role,
+      country: user.country,
+    });
     return { token, user };
   }
 
@@ -33,11 +47,18 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const isPasswordValid = await bcrypt.compare(passwordRaw, user.passwordHash);
+    const isPasswordValid = await bcrypt.compare(
+      passwordRaw,
+      user.passwordHash,
+    );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const token = this.jwtService.sign({ sub: user.id, role: user.role, country: user.country });
+    const token = this.jwtService.sign({
+      sub: user.id,
+      role: user.role,
+      country: user.country,
+    });
     return { token, user };
   }
 
